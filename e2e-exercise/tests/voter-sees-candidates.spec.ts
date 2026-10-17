@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('a voter registers and then sees the candidates of their district', async ({ request }) => {
   const voter = {
+    // ผมรัน node tools/randomThaiNationalId.mjs แล้วได้เลข 9823527330875
     nationalId: '9823527330875',
     password: 'voter1234',
     firstName: 'ฐนพล',
