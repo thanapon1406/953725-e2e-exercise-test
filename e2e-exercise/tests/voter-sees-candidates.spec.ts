@@ -14,4 +14,19 @@ test('a voter registers and then sees the candidates of their district', async (
   const registerRes = await test.step('voter registers', () =>
     request.post('/auth/register', { data: voter }),
   );
+  // 2nd step: assert the response
+  await test.step('You are a VOTER', async () => {
+    expect(registerRes.status(), await registerRes.text()).toBe(201);
+    const user = await registerRes.json();
+    expect(user).toEqual({
+      id: expect.any(Number),
+      nationalId: voter.nationalId,
+      firstName: voter.firstName,
+      lastName: voter.lastName,
+      address: voter.address,
+      districtId: voter.districtId,
+      role: 'VOTER',
+    });
+    expect(user).not.toHaveProperty('passwordHash');
+  });
 });
