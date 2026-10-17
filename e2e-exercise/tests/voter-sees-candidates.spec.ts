@@ -29,4 +29,22 @@ test('a voter registers and then sees the candidates of their district', async (
     });
     expect(user).not.toHaveProperty('passwordHash');
   });
+
+  // 3rd step: voter signs in to receive an access token
+  const accessToken = await test.step('voter signs in successfully', async () => {
+    const loginResponse = await request.post('/auth/login', {
+      data: {
+        nationalId: voter.nationalId,
+        password: voter.password,
+      },
+    });
+
+    expect(loginResponse.status(), await loginResponse.text()).toBe(200);
+
+    const loginData = await loginResponse.json();
+    expect(loginData.token).toEqual(expect.any(String));
+
+    return loginData.token;
+  });
+
 });
