@@ -46,5 +46,20 @@ test('a voter registers and then sees the candidates of their district', async (
 
     return loginData.token;
   });
+   // 4th step: ผู้มีสิทธิเลือกตั้งเรียกดูรายชื่อผู้สมัคร
+    const candidatesRes = await test.step('ผู้มีสิทธิเลือกตั้งเรียกดูรายชื่อผู้สมัคร', () =>
+    request.get('/me/candidates', {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  }),
+);
+    // 5th step: ตรวจสอบรายชื่อผู้สมัครรับเลือกตั้งจากข้อมูล seed
+    await test.step('ผู้มีสิทธิเลือกตั้งเห็นรายชื่อผู้สมัครในเขตเลือกตั้ง CM-2', async () => {
+    expect(candidatesRes.status(), await candidatesRes.text()).toBe(200);
+    expect(await candidatesRes.json()).toEqual([
+    { id: expect.any(Number), number: 1, name: 'อนันต์ ศรีสุข', party: 'พรรคดอยสุเทพ', selected: false },
+    { id: expect.any(Number), number: 2, name: 'มาลี วงศ์คำ', party: 'พรรคแม่ปิง', selected: false },
+  ]);
+});
 
+  
 });
